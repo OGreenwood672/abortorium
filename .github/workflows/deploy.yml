@@ -59,4 +59,4 @@ jobs:
             cd /societies/qjcr/abortorium
             git pull --allow-unrelated-histories
             npm ci --omit dev
-            node build
+            node build # yay
