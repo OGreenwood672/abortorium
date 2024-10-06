@@ -36,7 +36,7 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-          git switch foo
+          git switch build
           git pull
 
           # If your production files are in 'dist/' or similar, move them as needed
