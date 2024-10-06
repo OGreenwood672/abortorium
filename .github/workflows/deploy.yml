@@ -32,7 +32,7 @@ jobs:
 
       - name: Checkout the target branch
         run: |
-          git checkout --orphan -b dist || git checkout --orphan dist
+          git checkout dist
           git pull
           git rm -rf .
           git config user.name "github-actions[bot]"
