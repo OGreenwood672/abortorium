@@ -3,7 +3,7 @@ name: Deploy
 on:
   push:
     branches:
-      # - 'main'
+      - 'main'
 jobs:
   deploy:
     name: Deploy
@@ -51,3 +51,6 @@ jobs:
           script: |
             sudo -u qjcr bash
             cd ~/abortorium/
+            git pull
+            npm install
+            node build
