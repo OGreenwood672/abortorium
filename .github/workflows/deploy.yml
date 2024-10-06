@@ -52,7 +52,7 @@ jobs:
           port: 22
           script: |
             sudo -u qjcr bash
-            cd ~/abortorium/
+            cd /societies/qjcr/abortorium
             git pull
             npm install
             node build
