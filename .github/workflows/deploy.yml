@@ -42,7 +42,7 @@ jobs:
         run: |
           git add -f build/
           git commit -m "Update build artifacts" || echo "No changes to commit"
-          git push -u origin dist  # Push to the target branch
+          git push --force origin dist  # Push to the target branch
 
       - name: Pull and run
         uses: appleboy/ssh-action@v1.1.0
