@@ -39,11 +39,11 @@ jobs:
   
       - name: Commit and Push
         run: |
+          git add -f build/
           git mv build/package.json package.json
           git mv build/package-lock.json package-lock.json
           git add -f package.json
           git add -f package-lock.json
-          git add -f build/
           git commit -m "Update build artifacts" || echo "No changes to commit"
           git push origin dist --force # Push to the target branch
 
