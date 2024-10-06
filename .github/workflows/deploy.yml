@@ -57,6 +57,7 @@ jobs:
           script: |
             sudo -u qjcr bash
             cd /societies/qjcr/abortorium
+            git config --global --add safe.directory /societies/qjcr/abortorium
             git reset --hard origin/dist
             npm ci --omit dev
             node build # yay
