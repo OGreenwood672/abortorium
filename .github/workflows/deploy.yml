@@ -32,7 +32,7 @@ jobs:
 
       - name: Checkout the target branch
         run: |
-          git checkout -b dist || git checkout dist
+          git checkout --orphan -b dist || git checkout --orphan dist
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
   
