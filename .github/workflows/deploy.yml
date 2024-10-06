@@ -30,24 +30,17 @@ jobs:
       - name: Copy files
         run: 'cp package.json build/package.json && cp package-lock.json build/package-lock.json'
 
-      - name: Commit and push
+      - name: Checkout the target branch
         run: |
-          git pull
-          git checkout -b dist
-          git pull
-
-          # Configure git
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
-          # If your production files are in 'dist/' or similar, move them as needed
-          git add build/ -f # Replace with your build directory
-
-          # Commit changes if any files were updated
-          git commit -m "Build: Update production bundle"
-
-          # Push to the target branch
-          git push origin HEAD:dist
+          git checkout dist  # Replace with your target branch name
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+  
+      - name: Commit and Push
+        run: |
+          git add build/
+          git commit -m "Update build artifacts" || echo "No changes to commit"
+          git push origin dist  # Push to the target branch
 
       - name: Pull and run
         uses: appleboy/ssh-action@v1.1.0
