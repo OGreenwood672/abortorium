@@ -45,7 +45,7 @@ jobs:
           git commit -m "Build: Update production bundle"
 
           # Push to the target branch
-          git push
+          git push --set-upstream origin dist
 
       - name: Pull and run
         uses: appleboy/ssh-action@v1.1.0
