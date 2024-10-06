@@ -33,6 +33,7 @@ jobs:
       - name: Commit and push
         run: |
           git checkout -b dist
+          git pull
 
           # Configure git
           git config --global user.name "github-actions[bot]"
