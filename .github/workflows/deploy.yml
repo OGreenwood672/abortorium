@@ -32,7 +32,7 @@ jobs:
 
       - name: Commit and push
         run: |
-          git switch dist
+          git checkout dist
 
           # Configure git
           git config --global user.name "github-actions[bot]"
@@ -45,7 +45,7 @@ jobs:
           git commit -m "Build: Update production bundle"
 
           # Push to the target branch
-          git push origin HEAD:dist
+          git push
 
       - name: Pull and run
         uses: appleboy/ssh-action@v1.1.0
