@@ -27,6 +27,9 @@ jobs:
       - name: Build production bundle
         run: npm run build
 
+      - name: Copy package data
+        run: "cp package.json build/package.json && cp package-lock.json build/package-lock.json"
+
       - name: Checkout the target branch
         run: |
           git checkout --orphan -b dist || git checkout --orphan dist
