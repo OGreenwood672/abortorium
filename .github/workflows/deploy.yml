@@ -33,7 +33,7 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
           # If your production files are in 'dist/' or similar, move them as needed
-          git add build/  # Replace with your build directory
+          git add build/ -f # Replace with your build directory
 
           # Commit changes if any files were updated
           git diff --quiet || git commit -m "Build: Update production bundle"
