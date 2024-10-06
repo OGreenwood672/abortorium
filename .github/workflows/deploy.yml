@@ -32,11 +32,13 @@ jobs:
 
       - name: Commit and push
         run: |
+          git pull
+
           # Configure git
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-          git switch build
+          git checkout build
           git pull
 
           # If your production files are in 'dist/' or similar, move them as needed
