@@ -57,6 +57,6 @@ jobs:
           script: |
             sudo -u qjcr bash
             cd /societies/qjcr/abortorium
-            git pull
+            git pull --allow-unrelated-histories
             npm ci --omit dev
             node build
