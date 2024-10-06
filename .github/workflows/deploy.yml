@@ -27,9 +27,6 @@ jobs:
       - name: Build production bundle
         run: npm run build
 
-      - name: Copy files
-        run: 'cp package.json build/package.json && cp package-lock.json build/package-lock.json'
-
       - name: Checkout the target branch
         run: |
           git checkout --orphan -b dist || git checkout --orphan dist
@@ -39,6 +36,10 @@ jobs:
   
       - name: Commit and Push
         run: |
+          git mv build/package.json package.json
+          git mv build/package-lock.json package-lock.json
+          git add -f package.json
+          git add -f package-lock.json
           git add -f build/
           git commit -m "Update build artifacts" || echo "No changes to commit"
           git push origin dist --force # Push to the target branch
@@ -54,5 +55,5 @@ jobs:
             sudo -u qjcr bash
             cd /societies/qjcr/abortorium
             git pull
-            npm install
+            npm ci --omit dev
             node build
