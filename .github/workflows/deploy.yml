@@ -36,10 +36,8 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-          ls -a
-          git checkout build
+          git switch foo
           git pull
-          ls -a
 
           # If your production files are in 'dist/' or similar, move them as needed
           git add build/ -f # Replace with your build directory
