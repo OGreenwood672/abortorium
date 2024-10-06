@@ -32,6 +32,8 @@ jobs:
 
       - name: Commit and push
         run: |
+          git switch dist
+
           # Configure git
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
@@ -40,9 +42,7 @@ jobs:
           git add build/ -f # Replace with your build directory
 
           # Commit changes if any files were updated
-          git diff --quiet || git commit -m "Build: Update production bundle"
-
-          git pull origin dist --rebase 
+          git commit -m "Build: Update production bundle"
 
           # Push to the target branch
           git push origin HEAD:dist
