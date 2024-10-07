@@ -4,6 +4,8 @@
 	// let neighbours: any[] = [];
 	// let csrid = 'og314';
 
+	console.log('VISUALISE');
+
 	import Graph from '../../components/graph.svelte';
 
 	// async function fetchNeighbours() {

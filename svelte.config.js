@@ -13,6 +13,7 @@ const config = {
 		// See https://kit.svelte.dev/docs/adapters for more information about adapters.
 		adapter: adapter({
             fallback: 'index.html',  // Ensure fallback for client-side routing
+            out: "build"
         }),
         paths: {
             base: '/collegeroots'
