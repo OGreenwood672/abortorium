@@ -15,9 +15,9 @@ const config = {
             fallback: 'index.html',  // Ensure fallback for client-side routing
             out: "build"
         }),
-        paths: {
-            base: '/collegeroots'
-        }
+        // paths: {
+        //     base: '/collegeroots'
+        // }
 	}
 };
 
