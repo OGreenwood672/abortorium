@@ -1,5 +1,6 @@
 <script>
 	import { goto } from '$app/navigation';
+	console.log('SCRIPT');
 	function handleLogin() {
 		alert('Redirecting to Raven login...');
 		try {
