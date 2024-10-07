@@ -55,12 +55,11 @@ jobs:
           key: ${{ secrets.KEY }}
           port: 22
           script: |
-            source ~/.nvm/nvm.sh
             nvm use node
             cd /societies/qjcr/abortorium
-            sudo -u qjcr git config --global --add safe.directory /societies/qjcr/abortorium
-            sudo -u qjcr git reset --hard origin/dist
-            sudo -u qjcr npm ci --omit dev
+            git config --global --add safe.directory /societies/qjcr/abortorium
+            git reset --hard origin/dist
+            npm ci --omit dev
             sudo -u qjcr systemctl --user daemon-reload
             sudo -u qjcr systemctl --user restart collegeroots
             sudo -u qjcr systemctl --user enable collegeroots

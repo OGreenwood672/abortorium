@@ -12,7 +12,6 @@
 		"lint": "prettier --check ."
 	},
 	"devDependencies": {
-		"@sveltejs/adapter-auto": "^3.0.0",
 		"@sveltejs/adapter-node": "^5.2.5",
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^3.0.0",
@@ -30,8 +29,6 @@
 	"type": "module",
 	"dependencies": {
 		"dotenv": "^16.4.5",
-		"install": "^0.13.0",
-		"npm": "^10.9.0",
 		"pg": "^8.13.0"
 	}
 }
