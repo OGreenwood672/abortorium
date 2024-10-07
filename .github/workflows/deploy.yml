@@ -62,7 +62,6 @@ jobs:
             sudo -u qjcr git reset --hard origin/dist
             sudo -u qjcr npm ci --omit dev
             sudo -u qjcr systemctl --user daemon-reload
-            sudo -u qjcr systemctl --user stop collegeroots
             sudo -u qjcr systemctl --user restart collegeroots
             sudo -u qjcr systemctl --user enable collegeroots
             sudo -u qjcr systemctl --user start collegeroots
