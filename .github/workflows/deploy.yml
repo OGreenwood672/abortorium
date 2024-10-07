@@ -28,7 +28,7 @@ jobs:
         run: npm run build
 
       - name: Copy package data
-        run: "cp package.json build/package.json && cp package-lock.json build/package-lock.json"
+        run: 'cp package.json build/package.json && cp package-lock.json build/package-lock.json'
 
       - name: Checkout the target branch
         run: |
@@ -36,7 +36,7 @@ jobs:
           git rm -rf .
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-  
+
       - name: Commit and Push
         run: |
           git add -f build/
@@ -55,8 +55,8 @@ jobs:
           key: ${{ secrets.KEY }}
           port: 22
           script: |
-            sudo -u qjcr source ~/.nvm/nvm.sh
-            sudo -u qjcr nvm use node
+            source ~/.nvm/nvm.sh
+            nvm use node
             cd /societies/qjcr/abortorium
             sudo -u qjcr git config --global --add safe.directory /societies/qjcr/abortorium
             sudo -u qjcr git reset --hard origin/dist
@@ -65,4 +65,3 @@ jobs:
             sudo -u qjcr systemctl --user restart collegeroots
             sudo -u qjcr systemctl --user enable collegeroots
             sudo -u qjcr systemctl --user start collegeroots
-
