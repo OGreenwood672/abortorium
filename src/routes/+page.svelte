@@ -2,7 +2,12 @@
 	import { goto } from '$app/navigation';
 	function handleLogin() {
 		alert('Redirecting to Raven login...');
-		goto('/visualiser');
+		try {
+			goto('/visualiser');
+		} catch (error) {
+			console.log(error);
+		}
+		console.log('BAHHH');
 	}
 </script>
 
