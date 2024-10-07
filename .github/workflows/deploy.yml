@@ -61,7 +61,7 @@ jobs:
             git config --global --add safe.directory /societies/qjcr/abortorium
             git reset --hard origin/dist
             npm ci --omit dev
-            sudo -u qjcr bash
+            loginctl enable-linger qjcr
             sudo -u qjcr dbus-launch --exit-with-session
             sudo -u qjcr systemctl --user daemon-reload
             sudo -u qjcr systemctl --user restart collegeroots
