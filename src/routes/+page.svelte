@@ -1,7 +1,8 @@
 <script>
+	import { goto } from '$app/navigation';
 	function handleLogin() {
 		alert('Redirecting to Raven login...');
-		// Add Raven login functionality here
+		goto('/visualiser');
 	}
 </script>
 
