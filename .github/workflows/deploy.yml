@@ -56,7 +56,6 @@ jobs:
           port: 22
           script: |
             whoami
-            sudo -u qjcr bash
             whoami
             node -v
             nvm use node
