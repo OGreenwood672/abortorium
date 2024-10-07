@@ -56,6 +56,9 @@ jobs:
           port: 22
           script: |
             sudo -u qjcr bash
+            node -v
+            nvm use node
+            node -v
             cd /societies/qjcr/abortorium
             git config --global --add safe.directory /societies/qjcr/abortorium
             git reset --hard origin/dist
