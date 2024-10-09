@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { v4 as uuidv4 } from 'uuid'; // Import UUID utility
+	import { v5 as uuidv5 } from 'uuid'; // Import UUID utility
 
 	// Define the API response structure
 	interface ApiResponse {
@@ -26,8 +26,9 @@
 		}
 
 		// Convert marriage and parents to UUIDs if values are provided, otherwise set to null
-		marriage = marriage ? uuidv4() : null;
-		parents = parents ? uuidv4() : null;
+		const NAMESPACE = '6ba7b810-9dad-11d1-80b4-00c04fd430c8';
+		marriage = marriage ? uuidv5(marriage, NAMESPACE) : null;
+		parents = parents ? uuidv5(parents, NAMESPACE) : null;
 
 		// Prepare the query parameters
 		let queryParams;
