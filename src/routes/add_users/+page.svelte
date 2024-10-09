@@ -42,7 +42,7 @@
 
 		// Send POST request to the API endpoint
 		try {
-			const response = await fetch(`/api/create-users-table?${queryParams}`, {
+			const response = await fetch(`collegerooms/collegerooms/database?${queryParams}`, {
 				method: 'POST'
 			});
 			const result: ApiResponse = await response.json();

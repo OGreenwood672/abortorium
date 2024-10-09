@@ -4,7 +4,7 @@
 	function handleLogin() {
 		alert('Redirecting to Raven login...');
 		try {
-			goto('/visualiser');
+			goto('/collegerooms/collegerooms/visualiser');
 		} catch (error) {
 			console.log(error);
 		}

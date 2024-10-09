@@ -28,7 +28,7 @@ async function getAllNeighbours(csrid: string, depth: number): Promise<Set<strin
         if (currentDepth >= depth) continue;
 
         // Fetch direct neighbours for the current CSRID
-        const { rows } = await pool.query('SELECT neighbour FROM edges WHERE csrid = $1', [id]);
+        const { rows } = await pool.query('SELECT neighbour FROM college_family_members WHERE csrid = $1', [id]);
 
         for (const row of rows) {
             if (!visited.has(row.neighbour)) {
@@ -78,7 +78,7 @@ export async function POST({ url }) {
         const checkTableQuery = `
             SELECT EXISTS (
                 SELECT FROM information_schema.tables 
-                WHERE table_name = 'users'
+                WHERE table_name = 'college_family_members'
             );
         `;
 
