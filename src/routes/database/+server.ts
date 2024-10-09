@@ -15,8 +15,8 @@ const pool = new Pool({
     password: process.env.DB_PASSWORD
 });
 
-async function getAllNeighbours(csrid: string, depth: number): Promise<Record<string, string[]>> {
-    const neighboursMap: Record<string, string[]> = {}; // Hashmap to store csrid and its neighbours
+async function getAllNeighbours(csrid: string, depth: number): Promise<Record<string, { marriage: string[]; parents: string[] }>> {
+    const neighboursMap: Record<string, { marriage: string[]; parents: string[] }> = {};
     const queue: { id: string; currentDepth: number }[] = [{ id: csrid, currentDepth: 0 }];
     const visited = new Set<string>([csrid]); // Mark the initial csrid as visited
 
@@ -26,37 +26,60 @@ async function getAllNeighbours(csrid: string, depth: number): Promise<Record<st
         // If we have reached the maximum depth, stop exploring further
         if (currentDepth >= depth) continue;
 
-        // Fetch direct neighbours for the current CSRID based on marriage or parent relationships
+        // Fetch direct neighbours for the current CSRID based on marriage and parents
         const { rows } = await pool.query(`
-            SELECT csrid 
+            SELECT csrid, marriage, parents 
             FROM college_family_members 
-            WHERE marriage = (
-                SELECT marriage 
-                FROM college_family_members 
-                WHERE csrid = $1
-            ) 
-            OR parents = (
-                SELECT parents 
-                FROM college_family_members 
-                WHERE csrid = $1
-            ) 
-            AND csrid != $1
+            WHERE csrid = $1
         `, [id]);
 
-        // Initialize the list of neighbours for this csrid if not already
+        // Initialize the neighbours map for the current ID
         if (!neighboursMap[id]) {
-            neighboursMap[id] = [];
+            neighboursMap[id] = { marriage: [], parents: [] };
         }
 
-        // Iterate through each related csrid (neighbour) found
+        // Iterate through each related csrid found
         for (const row of rows) {
-            const neighbourCsrid = row.csrid;
-            if (!visited.has(neighbourCsrid)) {
-                visited.add(neighbourCsrid); // Mark as visited
-                neighboursMap[id].push(neighbourCsrid); // Add to the neighbours list for this csrid
+            const { marriage, parents } = row;
 
-                // Enqueue the neighbour for next depth level
-                queue.push({ id: neighbourCsrid, currentDepth: currentDepth + 1 });
+            // Find marriage neighbours
+            if (marriage) {
+                const marriageNeighbours = await pool.query(`
+                    SELECT csrid 
+                    FROM college_family_members 
+                    WHERE marriage = $1 AND csrid != $2
+                `, [marriage, id]);
+
+                for (const neighbourRow of marriageNeighbours.rows) {
+                    const neighbourCsrid = neighbourRow.csrid;
+                    if (!visited.has(neighbourCsrid)) {
+                        visited.add(neighbourCsrid); // Mark as visited
+                        neighboursMap[id].marriage.push(neighbourCsrid); // Add to marriage neighbours
+
+                        // Enqueue the neighbour for next depth level
+                        queue.push({ id: neighbourCsrid, currentDepth: currentDepth + 1 });
+                    }
+                }
+            }
+
+            // Find parents neighbours
+            if (parents) {
+                const parentNeighbours = await pool.query(`
+                    SELECT csrid 
+                    FROM college_family_members 
+                    WHERE parents = $1 AND csrid != $2
+                `, [parents, id]);
+
+                for (const neighbourRow of parentNeighbours.rows) {
+                    const neighbourCsrid = neighbourRow.csrid;
+                    if (!visited.has(neighbourCsrid)) {
+                        visited.add(neighbourCsrid); // Mark as visited
+                        neighboursMap[id].parents.push(neighbourCsrid); // Add to parents neighbours
+
+                        // Enqueue the neighbour for next depth level
+                        queue.push({ id: neighbourCsrid, currentDepth: currentDepth + 1 });
+                    }
+                }
             }
         }
     }
