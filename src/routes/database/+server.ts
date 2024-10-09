@@ -15,15 +15,15 @@ const pool = new Pool({
     password: process.env.DB_PASSWORD
 });
 
-async function getAllNeighbours(csrid: string, depth: number): Promise<Set<string>> {
-    const neighbours = new Set<string>();
+async function getAllNeighbours(csrid: string, depth: number): Promise<Record<string, string[]>> {
+    const neighboursMap: Record<string, string[]> = {}; // Hashmap to store csrid and its neighbours
     const queue: { id: string; currentDepth: number }[] = [{ id: csrid, currentDepth: 0 }];
     const visited = new Set<string>([csrid]); // Mark the initial csrid as visited
 
     while (queue.length > 0) {
         const { id, currentDepth } = queue.shift()!; // Dequeue the first element
 
-        // If we have reached the maximum depth, stop exploring deeper
+        // If we have reached the maximum depth, stop exploring further
         if (currentDepth >= depth) continue;
 
         // Fetch direct neighbours for the current CSRID based on marriage or parent relationships
@@ -43,17 +43,27 @@ async function getAllNeighbours(csrid: string, depth: number): Promise<Set<strin
             AND csrid != $1
         `, [id]);
 
+        // Initialize the list of neighbours for this csrid if not already
+        if (!neighboursMap[id]) {
+            neighboursMap[id] = [];
+        }
+
         // Iterate through each related csrid (neighbour) found
         for (const row of rows) {
-            if (!visited.has(row.csrid)) {
-                visited.add(row.csrid); // Mark as visited
-                neighbours.add(row.csrid); // Add to the neighbours set
-                queue.push({ id: row.csrid, currentDepth: currentDepth + 1 }); // Enqueue for next depth level
+            const neighbourCsrid = row.csrid;
+            if (!visited.has(neighbourCsrid)) {
+                visited.add(neighbourCsrid); // Mark as visited
+                neighboursMap[id].push(neighbourCsrid); // Add to the neighbours list for this csrid
+
+                // Enqueue the neighbour for next depth level
+                queue.push({ id: neighbourCsrid, currentDepth: currentDepth + 1 });
             }
         }
     }
-    return neighbours;
+
+    return neighboursMap;
 }
+
 
 
 // Example GET endpoint to fetch all neighbours
@@ -69,7 +79,7 @@ export const GET: RequestHandler = async ({ url }) => {
         // Get all neighbours up to the specified depth
         const neighbours = await getAllNeighbours(csrid, depth);
 
-        return json(Array.from(neighbours));
+        return json(neighbours);
     } catch (error) {
         console.error('Database query error:', error);
         // console.log(pool)
