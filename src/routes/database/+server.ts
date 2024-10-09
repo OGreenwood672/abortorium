@@ -15,7 +15,6 @@ const pool = new Pool({
     password: process.env.DB_PASSWORD
 });
 
-// Function to get all neighbours up to a specified depth iteratively
 async function getAllNeighbours(csrid: string, depth: number): Promise<Set<string>> {
     const neighbours = new Set<string>();
     const queue: { id: string; currentDepth: number }[] = [{ id: csrid, currentDepth: 0 }];
@@ -24,23 +23,38 @@ async function getAllNeighbours(csrid: string, depth: number): Promise<Set<strin
     while (queue.length > 0) {
         const { id, currentDepth } = queue.shift()!; // Dequeue the first element
 
-        // If we have reached the maximum depth, continue
+        // If we have reached the maximum depth, stop exploring deeper
         if (currentDepth >= depth) continue;
 
-        // Fetch direct neighbours for the current CSRID
-        const { rows } = await pool.query('SELECT neighbour FROM college_family_members WHERE csrid = $1', [id]);
+        // Fetch direct neighbours for the current CSRID based on marriage or parent relationships
+        const { rows } = await pool.query(`
+            SELECT csrid 
+            FROM college_family_members 
+            WHERE marriage = (
+                SELECT marriage 
+                FROM college_family_members 
+                WHERE csrid = $1
+            ) 
+            OR parents = (
+                SELECT parents 
+                FROM college_family_members 
+                WHERE csrid = $1
+            ) 
+            AND csrid != $1
+        `, [id]);
 
+        // Iterate through each related csrid (neighbour) found
         for (const row of rows) {
-            if (!visited.has(row.neighbour)) {
-                visited.add(row.neighbour); // Mark neighbour as visited
-                neighbours.add(row.neighbour); // Add to the neighbours set
-                queue.push({ id: row.neighbour, currentDepth: currentDepth + 1 }); // Enqueue the neighbour with incremented depth
+            if (!visited.has(row.csrid)) {
+                visited.add(row.csrid); // Mark as visited
+                neighbours.add(row.csrid); // Add to the neighbours set
+                queue.push({ id: row.csrid, currentDepth: currentDepth + 1 }); // Enqueue for next depth level
             }
         }
     }
-
     return neighbours;
 }
+
 
 // Example GET endpoint to fetch all neighbours
 export const GET: RequestHandler = async ({ url }) => {
