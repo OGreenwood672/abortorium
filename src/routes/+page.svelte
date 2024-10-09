@@ -1,14 +1,9 @@
 <script>
 	import { goto } from '$app/navigation';
-	console.log('SCRIPT');
+
 	function handleLogin() {
 		alert('Redirecting to Raven login...');
-		try {
-			goto('/collegerooms/collegerooms/visualiser');
-		} catch (error) {
-			console.log(error);
-		}
-		console.log('BAHHH');
+		goto('/collegeroots/collegeroots/visualiser');
 	}
 </script>
 

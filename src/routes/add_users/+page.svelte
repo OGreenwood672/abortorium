@@ -43,7 +43,7 @@
 
 		// Send POST request to the API endpoint
 		try {
-			const response = await fetch(`collegerooms/collegerooms/database?${queryParams}`, {
+			const response = await fetch(`database?${queryParams}`, {
 				method: 'POST'
 			});
 			const result: ApiResponse = await response.json();
