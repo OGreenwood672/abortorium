@@ -7,7 +7,9 @@
 
 	// Fetch data from the API endpoint
 	async function fetchNeighbours() {
-		const response = await fetch(`/database?depth=${depth}&csrid=${csrid}`);
+		const response = await fetch(
+			`collegeroots/collegeroots/database?depth=${depth}&csrid=${csrid}`
+		);
 		if (response.ok) {
 			neighbours = await response.json();
 		} else {
