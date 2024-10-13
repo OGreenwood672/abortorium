@@ -23,12 +23,12 @@
 
 		<!-- Edit Profile and Logout Buttons -->
 		<div class="flex space-x-4">
-			<button
+			<!-- <button
 				on:click={editProfile}
 				class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700"
 			>
 				Edit Profile
-			</button>
+			</button> -->
 			<button
 				on:click={logout}
 				class="bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-red-700"
