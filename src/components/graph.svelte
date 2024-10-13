@@ -100,10 +100,14 @@
 		display: block;
 		margin: 0 auto;
 	} */
+
 	#network {
-		width: 100vw;
-		height: 100vh;
-		margin: 0;
-		padding: 0;
+		position: fixed; /* Use fixed positioning */
+		top: 0; /* Align to the top */
+		left: 0; /* Align to the left */
+		width: 100%; /* Full width */
+		height: 100%; /* Full height */
+		background-color: #f0f0f0; /* Optional: background color */
+		z-index: -1; /* Send it to the back (if necessary) */
 	}
 </style>

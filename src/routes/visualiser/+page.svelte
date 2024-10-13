@@ -66,7 +66,7 @@
 	</div>
 
 	<!-- Dynamic Content: Nodes and Their Connections -->
-	<section class="mt-12 w-2/3">
+	<section>
 		<Graph />
 	</section>
 </main>
