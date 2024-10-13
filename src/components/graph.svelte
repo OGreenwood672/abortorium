@@ -1,10 +1,12 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { Network, type Edge, type Node } from 'vis-network';
+	import { Network, type Edge, type IdType, type Node } from 'vis-network';
 	import { DataSet } from 'vis-data';
 
 	let familyTree: Record<string, { partners: string[]; parents: string[] }>;
 	let college = "Queens'";
+
+	export let searchQuery: string;
 
 	// Fetch data from the API endpoint
 	async function fetchGraph() {
@@ -89,6 +91,15 @@
 
 		// Initialize the network
 		const network = new Network(container, data, options);
+
+		function selectNode(nodeId: IdType) {
+			network.selectNodes([nodeId]); // Select the node by its ID
+			network.focus(nodeId); // Optionally, focus on the node
+		}
+
+		if (searchQuery && Object.keys(data).includes(searchQuery)) {
+			selectNode(searchQuery);
+		}
 	}
 </script>
 

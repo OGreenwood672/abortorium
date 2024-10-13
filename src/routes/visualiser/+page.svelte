@@ -1,19 +1,5 @@
 <script lang="ts">
-	// import { onMount } from 'svelte';
-	// let depth = 2;
-	// let neighbours: any[] = [];
-	// let csrid = 'og314';
-
 	import Graph from '../../components/graph.svelte';
-
-	// async function fetchNeighbours() {
-	// 	const response = await fetch(`/api/get_neighbours?depth=${depth}&csrid=${csrid}`);
-	// 	if (response.ok) {
-	// 		neighbours = await response.json();
-	// 	} else {
-	// 		console.error('Failed to fetch data');
-	// 	}
-	// }
 
 	// Placeholder for handling search functionality
 	let searchQuery = '';
@@ -27,9 +13,7 @@
 		alert('Editing profile...');
 	}
 
-	// onMount(() => {
-	// 	fetchNeighbours();
-	// });
+	function focusNode() {}
 </script>
 
 <main
@@ -42,6 +26,7 @@
 			type="text"
 			placeholder="Search..."
 			class="w-1/3 p-4 px-10 rounded-3xl shadow-xl outline-none text-gray-700 placeholder-gray-500"
+			on:submit={focusNode}
 		/>
 	</div>
 
@@ -69,7 +54,7 @@
 
 	<!-- Dynamic Content: Nodes and Their Connections -->
 	<section class="w-full absolute top-0 min-h-screen -z-0">
-		<Graph />
+		<Graph {searchQuery} />
 	</section>
 </main>
 
