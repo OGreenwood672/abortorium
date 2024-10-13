@@ -97,8 +97,9 @@
 			network.focus(nodeId); // Optionally, focus on the node
 		}
 
-		if (searchQuery && Object.keys(data).includes(searchQuery)) {
+		$: if (searchQuery && Object.keys(data).includes(searchQuery)) {
 			selectNode(searchQuery);
+			console.log(searchQuery);
 		}
 	}
 </script>
