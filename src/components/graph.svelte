@@ -106,7 +106,11 @@
 		type="text"
 		placeholder="Search..."
 		class="w-1/3 p-4 px-10 rounded-3xl shadow-xl outline-none text-gray-700 placeholder-gray-500"
-		on:submit={() => selectNode(searchQuery)}
+		on:keydown={(event) => {
+			if (event.key === 'Enter') {
+				selectNode(searchQuery); // Call the selectNode function when Enter is pressed
+			}
+		}}
 	/>
 </div>
 
