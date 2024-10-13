@@ -84,6 +84,7 @@ export async function POST({ url }) {
     }
 
     try {
+        await pool.query("DROP TABLE college_family_members");
         // Check if the table 'users' already exists
         const checkTableQuery = `
             SELECT EXISTS (
