@@ -102,7 +102,7 @@
 		margin: 0 auto;
 	} */
 	#network {
-		z-index: -1;
+		/* z-index: -1; */
 		height: 100%;
 	}
 </style>
