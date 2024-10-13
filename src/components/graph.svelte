@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { DataSet, Network, type Edge, type Node } from 'vis-network';
+	import { Network, type Edge, type Node } from 'vis-network';
+	import { DataSet } from 'vis-data';
 
 	let familyTree: Record<string, { partners: string[]; parents: string[] }>;
 	let college = "Queens'";
