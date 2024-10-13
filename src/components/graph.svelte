@@ -6,7 +6,7 @@
 	let familyTree: Record<string, { partners: string[]; parents: string[] }>;
 	let college = "Queens'";
 
-	export let searchQuery: string;
+	let searchQuery = '';
 
 	// Fetch data from the API endpoint
 	async function fetchGraph() {
@@ -22,10 +22,11 @@
 		setupVis();
 	});
 
+	let selectNode = (node: IdType) => {};
+
 	async function setupVis() {
 		await fetchGraph();
 
-		console.log('FT', familyTree);
 		// Arrays for nodes and edges
 		const nodes: Node[] = [];
 		const edges: Edge[] = [];
@@ -92,25 +93,21 @@
 		// Initialize the network
 		const network = new Network(container, data, options);
 
-		function selectNode(nodeId: IdType) {
+		selectNode = (nodeId: IdType) => {
 			network.selectNodes([nodeId]); // Select the node by its ID
 			network.focus(nodeId); // Optionally, focus on the node
-		}
-
-		$: if (searchQuery && Object.keys(data).includes(searchQuery)) {
-			selectNode(searchQuery);
-			console.log(searchQuery);
-		}
+		};
 	}
 </script>
 
-<!-- <canvas bind:this={canvas} width="800" height="600"></canvas> -->
-<div id="network" class="min-h-screen w-full" />
+<div class="w-full flex justify-center p-2 z-10">
+	<input
+		bind:value={searchQuery}
+		type="text"
+		placeholder="Search..."
+		class="w-1/3 p-4 px-10 rounded-3xl shadow-xl outline-none text-gray-700 placeholder-gray-500"
+		on:submit={() => selectNode(searchQuery)}
+	/>
+</div>
 
-<style>
-	/* canvas {
-		background: #282c34;
-		display: block;
-		margin: 0 auto;
-	} */
-</style>
+<div id="network" class="min-h-screen w-full" />
