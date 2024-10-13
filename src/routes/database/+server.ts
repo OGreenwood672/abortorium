@@ -15,76 +15,39 @@ const pool = new Pool({
     password: process.env.DB_PASSWORD
 });
 
-async function getAllNeighbours(csrid: string, depth: number): Promise<Record<string, { marriage: string[]; parents: string[] }>> {
+async function getCollegeMembers(college: string): Promise<Record<string, { partners: string[]; parents: string[] }>> {
     const neighboursMap: Record<string, { marriage: string[]; parents: string[] }> = {};
-    const queue: { id: string; currentDepth: number }[] = [{ id: csrid, currentDepth: 0 }];
-    const visited = new Set<string>([csrid]); // Mark the initial csrid as visited
 
-    while (queue.length > 0) {
-        const { id, currentDepth } = queue.shift()!; // Dequeue the first element
-
-        // If we have reached the maximum depth, stop exploring further
-        if (currentDepth >= depth) continue;
 
         // Fetch direct neighbours for the current CSRID based on marriage and parents
         const { rows } = await pool.query(`
-            SELECT csrid, marriage, parents 
+            SELECT csrid, marriage, parents, college
             FROM college_family_members 
-            WHERE csrid = $1
-        `, [id]);
+            WHERE college = $1
+        `, [college]);
 
-        // Initialize the neighbours map for the current ID
-        if (!neighboursMap[id]) {
-            neighboursMap[id] = { marriage: [], parents: [] };
-        }
+        let graph: Record<string, { partners: string[]; parents: string[] }> = {};
 
-        // Iterate through each related csrid found
         for (const row of rows) {
-            const { marriage, parents } = row;
-
-            // Find marriage neighbours
-            if (marriage) {
-                const marriageNeighbours = await pool.query(`
-                    SELECT csrid 
-                    FROM college_family_members 
-                    WHERE marriage = $1 AND csrid != $2
-                `, [marriage, id]);
-
-                for (const neighbourRow of marriageNeighbours.rows) {
-                    const neighbourCsrid = neighbourRow.csrid;
-                    if (!visited.has(neighbourCsrid)) {
-                        visited.add(neighbourCsrid); // Mark as visited
-                        neighboursMap[id].marriage.push(neighbourCsrid); // Add to marriage neighbours
-
-                        // Enqueue the neighbour for next depth level
-                        queue.push({ id: neighbourCsrid, currentDepth: currentDepth + 1 });
+            let partners = [];
+            let parents = [];
+            for (const row2 of rows) {
+                if (row2.csrid !== row.csrid) {
+                    if (row2.marriage == row.marriage) {
+                        partners.push(row2.csrid);
+                    }
+                    if (row2.marriage == row.parents) {
+                        parents.push(row2.csrid)
                     }
                 }
             }
-
-            // Find parents neighbours
-            if (parents) {
-                const parentNeighbours = await pool.query(`
-                    SELECT csrid 
-                    FROM college_family_members 
-                    WHERE parents = $1 AND csrid != $2
-                `, [parents, id]);
-
-                for (const neighbourRow of parentNeighbours.rows) {
-                    const neighbourCsrid = neighbourRow.csrid;
-                    if (!visited.has(neighbourCsrid)) {
-                        visited.add(neighbourCsrid); // Mark as visited
-                        neighboursMap[id].parents.push(neighbourCsrid); // Add to parents neighbours
-
-                        // Enqueue the neighbour for next depth level
-                        queue.push({ id: neighbourCsrid, currentDepth: currentDepth + 1 });
-                    }
-                }
+            graph[row.csrid] = {
+                "partners": partners,
+                "parents": parents
             }
         }
-    }
 
-    return neighboursMap;
+        return graph;
 }
 
 
@@ -92,17 +55,16 @@ async function getAllNeighbours(csrid: string, depth: number): Promise<Record<st
 // Example GET endpoint to fetch all neighbours
 export const GET: RequestHandler = async ({ url }) => {
     try {
-        const depth = parseInt(url.searchParams.get('depth') || '1', 10); // Specify depth
-        const csrid = url.searchParams.get('csrid');
+        const college = url.searchParams.get('college');
 
-        if (!csrid) {
-            return json({ error: 'Missing csrid parameter' }, { status: 400 });
+        if (!college) {
+            return json({ error: 'Missing college parameter' }, { status: 400 });
         }
 
         // Get all neighbours up to the specified depth
-        const neighbours = await getAllNeighbours(csrid, depth);
+        const graph = await getCollegeMembers(college);
 
-        return json(neighbours);
+        return json(graph);
     } catch (error) {
         console.error('Database query error:', error);
         // console.log(pool)
@@ -114,6 +76,7 @@ export async function POST({ url }) {
     const csrid = url.searchParams.get('csrid');
     const marriage = url.searchParams.get('marriage'); // Can be null
     const parents = url.searchParams.get('parents'); // Can be null
+    const college = url.searchParams.get('college');
 
     // Validate that 'csrid' is provided
     if (!csrid) {
@@ -138,7 +101,8 @@ export async function POST({ url }) {
                 CREATE TABLE college_family_members (
                     csrid VARCHAR(255) PRIMARY KEY,
                     marriage UUID DEFAULT NULL,
-                    parents UUID DEFAULT NULL
+                    parents UUID DEFAULT NULL,
+                    college VARCHAR,
                 );
             `;
             await pool.query(createTableQuery);
@@ -147,13 +111,13 @@ export async function POST({ url }) {
 
         // Insert new user entry
         const insertUserQuery = `
-            INSERT INTO college_family_members (csrid, marriage, parents) 
-            VALUES ($1, $2, $3)
+            INSERT INTO college_family_members (csrid, marriage, parents, college) 
+            VALUES ($1, $2, $3, $4)
             ON CONFLICT (csrid) 
             DO NOTHING;
         `;
 
-        await pool.query(insertUserQuery, [csrid, marriage || null, parents || null]);
+        await pool.query(insertUserQuery, [csrid, marriage || null, parents || null, college]);
 
         console.log(`New user ${csrid} added to the "college_family_members" table.`);
 

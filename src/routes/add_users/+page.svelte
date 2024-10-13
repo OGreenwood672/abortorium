@@ -18,10 +18,16 @@
 		const csrid = formData.get('csrid') as string;
 		let marriage = formData.get('marriage') as string | null;
 		let parents = formData.get('parents') as string | null;
+		let college = formData.get('college') as string | null;
 
 		// Validate CSRID
 		if (!csrid) {
 			alert('CSRID is required');
+			return;
+		}
+
+		if (!college || college != "Queens'") {
+			alert('Invalid college');
 			return;
 		}
 
@@ -31,19 +37,17 @@
 		parents = parents ? uuidv5(parents, NAMESPACE) : null;
 
 		// Prepare the query parameters
-		let queryParams;
-		if (marriage == null && parents == null)
-			queryParams = new URLSearchParams({ csrid }).toString();
-		else if (parents != null && marriage == null)
-			queryParams = new URLSearchParams({ csrid, parents }).toString();
-		else if (parents == null && marriage != null)
-			queryParams = new URLSearchParams({ csrid, marriage }).toString();
-		else if (parents != null && marriage != null)
-			queryParams = new URLSearchParams({ csrid, parents, marriage }).toString();
+		let queryParams = new URLSearchParams({ csrid });
+
+		if (parents !== null) queryParams.append('parents', parents);
+		if (marriage !== null) queryParams.append('marriage', marriage);
+		queryParams.append('college', college);
+
+		const queryString = queryParams.toString();
 
 		// Send POST request to the API endpoint
 		try {
-			const response = await fetch(`database?${queryParams}`, {
+			const response = await fetch(`database?${queryString}`, {
 				method: 'POST'
 			});
 			const result: ApiResponse = await response.json();
@@ -87,6 +91,14 @@
 					type="text"
 					placeholder="Parents (UUID or empty)"
 					name="parents"
+				/>
+			</div>
+			<div>
+				<input
+					class="w-full px-4 py-3 text-lg border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+					type="text"
+					placeholder="College"
+					name="college"
 				/>
 			</div>
 			<button

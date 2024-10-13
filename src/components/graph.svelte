@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { DataSet, Network, type Edge, type Node } from 'vis-network';
 
-	let familyTree: Record<string, { marriage: string[]; parents: string[] }>;
-	let depth = 2; // Number of levels of neighbours to fetch
-	let csrid = 'og314'; // Example CSRID
+	let familyTree: Record<string, { partners: string[]; parents: string[] }>;
+	let college = "Queens'";
 
 	// Fetch data from the API endpoint
-	async function fetchNeighbours() {
-		const response = await fetch(`database?depth=${depth}&csrid=${csrid}`);
+	async function fetchGraph() {
+		const response = await fetch(`database?college=${college}`);
 		if (response.ok) {
 			familyTree = await response.json();
 		} else {
@@ -16,110 +16,85 @@
 	}
 
 	onMount(() => {
-		fetchNeighbours();
-		setupCanvas();
+		fetchGraph();
+		setupVis();
 	});
-	let canvas: HTMLCanvasElement;
-	let ctx: CanvasRenderingContext2D;
 
-	let radius = 20; // Radius of the pulsating circles
-	let pulsate = true; // Pulsating effect flag
-	let scale = 1; // Scale for pulsating effect
-	let increment = 0.01; // Increment for scaling
+	function setupVis() {
+		// Arrays for nodes and edges
+		const nodes: Node[] = [];
+		const edges: Edge[] = [];
 
-	// Positions for circles, adjust according to the structure
-	const positions = new Map<string, { x: number; y: number }>();
+		// Iterate over familyData to build nodes and edges
+		Object.keys(familyTree).forEach((person) => {
+			// Add the person as a node
+			nodes.push({ id: person, label: person });
 
-	// Function to draw pulsating circles
-	function drawCircle(x: number, y: number, csrid: string) {
-		ctx.beginPath();
-		ctx.arc(x, y, radius * scale, 0, Math.PI * 2);
-		ctx.fillStyle = 'rgba(100, 149, 237, 0.7)'; // Cornflower blue
-		ctx.fill();
-		ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
-		ctx.stroke();
-		ctx.fillStyle = '#000'; // Text color
-		ctx.fillText(csrid, x - ctx.measureText(csrid).width / 2, y + 5); // Center the text
-	}
+			// Add edges for partners
+			familyTree[person].partners.forEach((partner) => {
+				// Create an undirected edge for each partnership
+				edges.push({ from: person, to: partner, label: 'partner', arrows: '' });
+			});
 
-	// Function to draw lines
-	function drawLine(from: { x: number; y: number }, to: { x: number; y: number }) {
-		ctx.beginPath();
-		ctx.moveTo(from.x, from.y);
-		ctx.lineTo(to.x, to.y);
-		ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
-		ctx.lineWidth = 2;
-		ctx.stroke();
-	}
+			// Add edges for parents
+			familyTree[person].parents.forEach((parent) => {
+				// Create a directed edge from the parent to the child
+				edges.push({ from: parent, to: person, label: 'parent', arrows: 'to' });
+			});
+		});
 
-	// Main draw function
-	function draw() {
-		ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-		for (const [csrid, position] of positions) {
-			drawCircle(position.x, position.y, csrid); // Draw each CSRID as a circle
-		}
-		for (const [csrid, relationships] of Object.entries(familyTree)) {
-			const { marriage, parents } = relationships;
-			const position = positions.get(csrid);
-			if (position) {
-				for (const partner of marriage) {
-					const partnerPosition = positions.get(partner);
-					if (partnerPosition) {
-						drawLine(position, partnerPosition); // Draw lines for marriages
-					}
+		// Create a network
+		const container = document.getElementById('network') as HTMLElement;
+
+		// Provide data in the form of a vis.js DataSet
+		const data = {
+			nodes: new DataSet<Node>(nodes),
+			edges: new DataSet<Edge>(edges)
+		};
+
+		// Configuration for the network
+		const options = {
+			edges: {
+				arrows: {
+					to: { enabled: true, scaleFactor: 1 } // Arrow for parent-to-child relationships
+				},
+				smooth: false,
+				color: '#848484',
+				font: { align: 'top' }
+			},
+			nodes: {
+				shape: 'dot',
+				size: 20,
+				font: {
+					size: 15
 				}
-				for (const parent of parents) {
-					const parentPosition = positions.get(parent);
-					if (parentPosition) {
-						drawLine(position, parentPosition); // Draw lines for parents
-					}
-				}
+			},
+			physics: {
+				enabled: true, // Enable physics for better layout and spacing
+				solver: 'forceAtlas2Based',
+				forceAtlas2Based: {
+					gravitationalConstant: -50,
+					centralGravity: 0.005,
+					springLength: 100,
+					springConstant: 0.05
+				},
+				maxVelocity: 50,
+				minVelocity: 0.1
 			}
-		}
+		};
 
-		// Pulsating effect
-		scale += increment;
-		if (scale >= 1.2 || scale <= 0.8) {
-			increment = -increment; // Reverse the pulsating direction
-		}
-
-		requestAnimationFrame(draw); // Request next frame
-	}
-
-	// Set up canvas and positions when component mounts
-	function setupCanvas() {
-		if (canvas) {
-			let ctx_temp = canvas.getContext('2d');
-			if (ctx_temp != null) ctx = ctx_temp;
-
-			const width = canvas.width;
-			const height = canvas.height;
-
-			let x = 50; // Initial x position
-			let y = 50; // Initial y position
-			const spacing = 100; // Spacing between circles
-
-			// Define positions for each CSRID
-			for (const csrid of Object.keys(familyTree)) {
-				positions.set(csrid, { x, y });
-				x += spacing; // Move right for the next CSRID
-				if (x > width - spacing) {
-					// Move to the next row if out of bounds
-					x = 50;
-					y += spacing;
-				}
-			}
-			draw(); // Start drawing
-		}
+		// Initialize the network
+		const network = new Network(container, data, options);
 	}
 </script>
 
-<canvas bind:this={canvas} width="800" height="600"></canvas>
+<!-- <canvas bind:this={canvas} width="800" height="600"></canvas> -->
+<div id="network" />
 
 <style>
-	canvas {
+	/* canvas {
 		background: #282c34;
 		display: block;
 		margin: 0 auto;
-	}
+	} */
 </style>
