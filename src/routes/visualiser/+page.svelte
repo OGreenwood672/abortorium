@@ -66,7 +66,7 @@
 	</div>
 
 	<!-- Dynamic Content: Nodes and Their Connections -->
-	<section class="w-full h-full">
+	<section class="w-full min-h-screen">
 		<Graph />
 	</section>
 </main>
