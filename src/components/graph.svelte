@@ -57,7 +57,7 @@
 
 		// Configuration for the network
 		const options = {
-			height: '100%',
+			height: `${window.innerHeight}px`,
 			edges: {
 				arrows: {
 					to: { enabled: true, scaleFactor: 1 } // Arrow for parent-to-child relationships
