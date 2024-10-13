@@ -32,7 +32,9 @@
 	// });
 </script>
 
-<main class="flex flex-col items-center justify-start min-h-screen bg-gray-100 text-center">
+<main
+	class="flex flex-col items-center justify-start min-h-screen bg-gray-100 text-center relative"
+>
 	<!-- Search Bar centered at the top of the page -->
 	<div class="w-full flex justify-center p-2">
 		<input
