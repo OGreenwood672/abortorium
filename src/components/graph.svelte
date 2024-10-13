@@ -57,6 +57,7 @@
 
 		// Configuration for the network
 		const options = {
+			height: '100%',
 			edges: {
 				arrows: {
 					to: { enabled: true, scaleFactor: 1 } // Arrow for parent-to-child relationships
@@ -100,4 +101,8 @@
 		display: block;
 		margin: 0 auto;
 	} */
+	#network {
+		z-index: -1;
+		height: 100%;
+	}
 </style>
