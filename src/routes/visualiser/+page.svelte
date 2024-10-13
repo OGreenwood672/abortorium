@@ -32,7 +32,9 @@
 	// });
 </script>
 
-<main class="flex flex-col items-center justify-start min-h-screen bg-gray-100 text-center">
+<main
+	class="flex flex-col items-center justify-start min-h-screen bg-gray-100 text-center relative"
+>
 	<!-- Search Bar centered at the top of the page -->
 	<div class="w-full flex justify-center p-2">
 		<input
@@ -43,10 +45,10 @@
 		/>
 	</div>
 
-	<!-- Top Bar with Edit Profile and Logout buttons -->
-	<div class="w-full flex justify-between items-center p-4">
-		<div class="flex-grow"></div>
+	<!-- Top Bar with Edit Profile and Logout buttons (without background) -->
+	<div class="w-fit flex justify-between items-center p-4 absolute top-0 right-0">
 		<!-- Invisible placeholder to center buttons -->
+		<div></div>
 
 		<!-- Edit Profile and Logout Buttons -->
 		<div class="flex space-x-4">
@@ -66,7 +68,7 @@
 	</div>
 
 	<!-- Dynamic Content: Nodes and Their Connections -->
-	<section class="w-full flex min-h-screen">
+	<section class="w-full absolute top-0 min-h-screen">
 		<Graph />
 	</section>
 </main>
