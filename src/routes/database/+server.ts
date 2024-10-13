@@ -103,7 +103,7 @@ export async function POST({ url }) {
                     csrid VARCHAR(255) PRIMARY KEY,
                     marriage UUID DEFAULT NULL,
                     parents UUID DEFAULT NULL,
-                    college VARCHAR,
+                    college VARCHAR(255)
                 );
             `;
             await pool.query(createTableQuery);
