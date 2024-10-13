@@ -92,7 +92,7 @@
 </script>
 
 <!-- <canvas bind:this={canvas} width="800" height="600"></canvas> -->
-<div id="network" />
+<div id="network" class="h-full" />
 
 <style>
 	/* canvas {
