@@ -17,11 +17,13 @@
 	}
 
 	onMount(() => {
-		fetchGraph();
 		setupVis();
 	});
 
-	function setupVis() {
+	async function setupVis() {
+		await fetchGraph();
+
+		console.log('FT', familyTree);
 		// Arrays for nodes and edges
 		const nodes: Node[] = [];
 		const edges: Edge[] = [];
