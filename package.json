@@ -17,6 +17,7 @@
 		"@sveltejs/vite-plugin-svelte": "^3.0.0",
 		"@types/node": "^22.7.4",
 		"@types/pg": "^8.11.10",
+		"@types/vis": "^4.21.27",
 		"autoprefixer": "^10.4.20",
 		"prettier": "^3.3.2",
 		"prettier-plugin-svelte": "^3.2.5",
@@ -28,7 +29,13 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@types/uuid": "^10.0.0",
 		"dotenv": "^16.4.5",
-		"pg": "^8.13.0"
+		"pg": "^8.13.0",
+		"terser": "^5.34.1",
+		"uuid": "^9.0.0",
+		"vis": "^4.21.0-EOL",
+		"vis-data": "^7.1.9",
+		"vis-network": "^9.1.9"
 	}
 }

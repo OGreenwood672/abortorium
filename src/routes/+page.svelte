@@ -1,8 +1,9 @@
 <script>
 	import { goto } from '$app/navigation';
+
 	function handleLogin() {
 		alert('Redirecting to Raven login...');
-		goto('/visualiser');
+		goto('/collegeroots/collegeroots/visualiser');
 	}
 </script>
 
